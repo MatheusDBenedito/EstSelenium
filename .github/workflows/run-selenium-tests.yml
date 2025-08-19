@@ -1,0 +1,35 @@
+# Nome do workflow que aparecerá na aba "Actions" do GitHub
+name: Run Selenium Java Tests
+
+# Gatilhos: quando este workflow deve rodar?
+on:
+  # Roda em todo push para a branch 'main'
+  push:
+    branches: [ main ]
+  # Roda em toda abertura/atualização de Pull Request para a branch 'main'
+  pull_request:
+    branches: [ main ]
+
+# Define os trabalhos (jobs) que serão executados
+jobs:
+  test:
+    # A máquina virtual que será usada (Ubuntu mais recente)
+    runs-on: ubuntu-latest
+
+    # Os passos (steps) que o job irá executar em sequência
+    steps:
+      # 1. Clona o código do seu repositório para a máquina virtual
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura o ambiente Java (JDK 17)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # 3. Executa os testes usando Maven em modo batch
+      - name: Run tests with Maven
+        run: mvn -B clean test
